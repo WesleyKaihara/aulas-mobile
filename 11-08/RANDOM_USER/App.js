@@ -8,21 +8,27 @@ export default function App() {
   const fetchUsers = async () => {
     const req = []
 
-
-    for(let i=0;i<6;i++) {
+    for(let i = 0; i<6; i++) {
       req.push(await axios.get("https://randomuser.me/api/"))
     }
-    const data = await Promise.all(req)
-    console.log("DATA",data[0]);
 
-    setUsers([...users])
+    const data = await Promise.all(req)
+    const userList = data
+      .map(response => response.data.results[0])
+    console.log(userList);
+    setUsers(userList)
   }
 
   return (
     <View style={styles.container}>
-      { users.map(user => {
-        <Text>{user.name}</Text>
-      })}
+       {users.map((user,idx) => (
+        <Text 
+          key={idx} 
+          style={styles.userItem}
+        >
+          {user.name.first} {user.name.last}
+        </Text>
+      ))}
 
       <Button 
         title='Generate users' 
@@ -39,4 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  userItem: {
+    padding:10
+  }
 });
